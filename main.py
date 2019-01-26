@@ -28,16 +28,15 @@ def convertToInt(label_str):
 
 
 file_list = os.listdir("./annotation/")
-
+result = []
 for policy_name in file_list:
 
     html_name = policy_name.replace('.csv', '.html')
     soup = BeautifulSoup(open('./sanitized_policies/' + html_name), features="lxml")
     # print(soup.get_text())
     segments = soup.get_text().split('|||')
-    result = []
 
-    with open('./annotation/20_theatlantic.com.csv') as csvfile:
+    with open('./annotation/'+policy_name) as csvfile:
         spamreader = list(csv.reader(csvfile))
         for i in range(0, len(segments)):
             policy_id = ""
@@ -54,10 +53,11 @@ for policy_name in file_list:
             label_result = ''.join(label_result)
 
             result.append([policy_id, i, segments[i], label_result])
-    with open('./result/' + policy_name.replace('.csv', '.tsv'), 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerows(result)
-        # for item in result:
+
+with open('./result/result.tsv',  'w', newline='') as tsvfile:
+    writer = csv.writer(tsvfile, delimiter='\t')
+    writer.writerows(result)
+    # for item in result:
 
 
 
