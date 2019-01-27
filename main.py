@@ -35,26 +35,26 @@ for policy_name in file_list:
     soup = BeautifulSoup(open('./sanitized_policies/' + html_name), features="lxml")
     # print(soup.get_text())
     segments = soup.get_text().split('|||')
-
+    i = 0
     with open('./annotation/'+policy_name) as csvfile:
         spamreader = list(csv.reader(csvfile))
-        for i in range(0, len(segments)):
-            policy_id = ""
-            label_result = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0"]
-            for row in spamreader:
-                policy_id = row[3]
-                label_str = row[5]
-                label = convertToInt(label_str)
+        for row in spamreader:
+            id = str(row[3]) + "_" + str(row[4]) + "_" + str(i)
+            label_str = row[5]
+            label = convertToInt(label_str)
                 # print(label)
-                if int(row[4]) == i:
+                # if int(row[4]) == i:
                     # print("jsd")
                     # print(label)
-                    label_result[label] = "1"
-            label_result = ''.join(label_result)
+                    # label_result[label] = "1"
 
-            result.append([policy_id, i, segments[i], label_result])
+            # label_result = ''.join(label_result)
 
-with open('./result/result.tsv',  'w', newline='') as tsvfile:
+            result.append([id, label, segments[int(row[4])]])
+            i = i + 1
+
+with open('./result/result_3.tsv',  'w', newline='') as tsvfile:
+    # fieldnames = ['id', 'sentiment', 'reviews']
     writer = csv.writer(tsvfile, delimiter='\t')
     writer.writerows(result)
     # for item in result:
